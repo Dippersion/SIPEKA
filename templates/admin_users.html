@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Manajemen Users</h2>
+
+<!-- Form Tambah User -->
+<div class="card p-3 shadow-sm mb-4">
+  <h5 class="mb-3">Tambah User Baru</h5>
+  <form method="post" action="{{ url_for('admin_users_add') }}" class="row g-3">
+    <div class="col-md-4">
+      <input type="text" name="username" placeholder="Username" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+      <input type="password" name="password" placeholder="Password" class="form-control" required>
+    </div>
+    <div class="col-md-3">
+      <select name="role" class="form-select">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-success">Tambah</button>
+    </div>
+  </form>
+</div>
+
+<!-- Daftar Users -->
+<div class="card shadow-sm">
+  <h5 class="mb-3">Daftar User</h5>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <tr>
+		  <th>No</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+		  <td>{{ loop.index }}</td>
+          <td>{{ u['username'] }}</td>
+          <td>{{ u['role'] }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin_users_delete', uid=u['id']) }}" 
+                  onsubmit="return confirm('Hapus user ini?');" class="d-inline">
+              <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

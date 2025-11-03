@@ -1,0 +1,20 @@
+
+<div class="navbar">
+  <img src="{{ url_for('static', filename='logo.png') }}" alt="Elektromedis Logo">
+  <div class="brand">ELEKTROMEDIS RSUD TIGARAKSA</div>
+  <div class="nav">
+    {% if session.get('user') %}
+      {% if session['user']['role'] == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin_inventory') }}">Inventaris</a>
+        <a href="{{ url_for('admin_users') }}">Users</a>
+      {% else %}
+        <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('user_report_new') }}">Buat Laporan</a>
+      {% endif %}
+      <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
+  </div>
+</div>

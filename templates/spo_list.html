@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">📑 Daftar SPO Alat</h3>
+
+<div class="card shadow-sm p-3">
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>No.</th>
+          <th>Nama Alat</th>
+          <th>Merk</th>
+          <th>Type</th>
+          <th>Lihat/Unduh SPO</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in items %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ s['alat_nama'] }}</td>
+          <td>{{ s['alat_merk'] }}</td>
+          <td>{{ s['alat_tipe'] }}</td>
+          <td>
+            {% if s['file_path'] %}
+              <a href="{{ url_for('static', filename=s['file_path'].replace('static/','')) }}" 
+                 target="_blank" class="btn btn-sm btn-primary">Unduh</a>
+            {% else %}
+              <span class="text-muted">Belum ada file</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center">Belum ada SPO</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

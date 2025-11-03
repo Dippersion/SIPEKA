@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card shadow-sm p-4">
+
+<!-- 🔔 Notifikasi -->
+<div class="d-flex justify-content-end mb-3 position-relative">
+  <button id="notifBtn" class="btn btn-outline-secondary position-relative">
+    🔔
+    <span id="notifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+  </button>
+</div>
+
+<h3 class="mb-4">Dashboard Admin</h3>
+
+<!-- Total Inventaris -->
+<div class="d-flex align-items-center mb-4">
+  <h5 class="me-2 mb-0">Total Inventaris:</h5>
+  <span class="badge rounded-pill bg-success text-white px-3 py-2">
+    {{ invTotal }}
+  </span>
+</div>
+
+<!-- Total Laporan -->
+<div class="d-flex align-items-center mb-4">
+  <h5 class="me-2 mb-0">Total Laporan:</h5>
+  <span class="badge rounded-pill bg-primary text-white px-3 py-2">
+    {{ repTotal }}
+  </span>
+</div>
+
+<!-- 💡 Tambahan baru -->
+<div class="d-flex align-items-center mb-4" style="gap: 1rem;">
+  <div>
+    <h6 class="me-2 mb-0 d-inline">Proses:</h6>
+    <span class="badge rounded-pill bg-warning text-dark px-3 py-2">
+      {{ total_proses }}
+    </span>
+  </div>
+  <div>
+    <h6 class="me-2 mb-0 d-inline">Selesai:</h6>
+    <span class="badge rounded-pill bg-success text-white px-3 py-2">
+      {{ total_selesai }}
+    </span>
+  </div>
+</div>
+
+<!-- Filter & Search -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <form method="get" class="d-flex align-items-center gap-2">
+    <input type="text" name="q" placeholder="Cari judul/ruangan" class="form-control form-control-sm" value="{{ q }}">
+    <select name="status_filter" class="form-select form-select-sm">
+      <option value="">Semua Status</option>
+      <option value="Proses" {% if status_filter=='Proses' %}selected{% endif %}>Proses</option>
+      <option value="Selesai" {% if status_filter=='Selesai' %}selected{% endif %}>Selesai</option>
+    </select>
+    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+  </form>
+</div>
+
+<!-- Daftar Laporan -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-3">Daftar Laporan</h5>
+  <div>
+   
+    <a href="{{ url_for('admin_reports_export_xlsx') }}" class="btn btn-outline-success btn-sm">📊 Unduh Excel</a>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+		<th>No</th>
+        <th>Tanggal</th>
+        <th>Judul</th>
+        <th>Unit/Ruangan</th>
+        <th>Deskripsi</th>
+        <th>Foto</th>
+        <th>Komentar</th>
+        <th>Status</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+		<td>{{ loop.index + ((page - 1) * per_page) }}</td>
+        <td>{{ r['created_at'] }}</td>
+        <td>{{ r['title'] }}</td>
+        <td>{{ r['unit'] }}</td>
+        <td>{{ r['description'] or '-' }}</td>
+
+
+        <td>
+          {% if r['image_path'] %}
+            <a href="{{ url_for('static', filename=r['image_path']) }}" target="_blank">
+              <img src="{{ url_for('static', filename=r['image_path']) }}" alt="foto" class="img-thumbnail" style="max-height:80px;">
+            </a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>{{ r['comment'] or '-' }}</td>
+        <td>
+          {% if r['status'] == 'Selesai' %}
+            <span class="status-selesai">Selesai</span>
+          {% elif r['status'] == 'Proses' %}
+            <span class="status-proses">Proses</span>
+          {% else %}
+            <span class="badge bg-secondary">-</span>
+          {% endif %}
+        </td>
+        <td>
+          <form action="{{ url_for('admin_report_update', rid=r['id']) }}" method="post" class="d-inline">
+            <select name="status" class="form-select form-select-sm d-inline w-auto">
+              <option value="Proses" {% if r['status']=="Proses" %}selected{% endif %}>Proses</option>
+              <option value="Selesai" {% if r['status']=="Selesai" %}selected{% endif %}>Selesai</option>
+            </select>
+            <textarea name="comment" placeholder="Komentar" class="form-control form-control-sm d-inline komentar-field" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';">{{ r['comment'] or '' }}</textarea>
+            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+          </form>
+          <form action="{{ url_for('admin_report_delete', rid=r['id']) }}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus laporan ini?')">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center">Belum ada laporan.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if total_pages > 1 %}
+<nav aria-label="Page navigation" class="mt-3">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+      <a class="page-link" href="?page={{ page-1 }}&q={{ q }}&status_filter={{ status_filter }}">Previous</a>
+    </li>
+    {% for p in range(1, total_pages+1) %}
+    <li class="page-item {% if p == page %}active{% endif %}">
+      <a class="page-link" href="?page={{ p }}&q={{ q }}&status_filter={{ status_filter }}">{{ p }}</a>
+    </li>
+    {% endfor %}
+    <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+      <a class="page-link" href="?page={{ page+1 }}&q={{ q }}&status_filter={{ status_filter }}">Next</a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const notifBadge = document.getElementById("notifCount");
+  const notifBtn = document.getElementById("notifBtn");
+  const tbody = document.querySelector("table tbody");
+  let notifCount = 0;
+
+  const updateBadge = () => {
+    notifBadge.style.display = notifCount > 0 ? "inline-block" : "none";
+    notifBadge.textContent = notifCount;
+  };
+
+  const socket = io();
+  const username = "{{ user.username }}";
+  socket.emit("join", { username, room: "admin" });
+
+  // 🔹 Fungsi untuk memperbarui nomor urut semua baris tabel
+  function updateRowNumbers() {
+  const rows = tbody.querySelectorAll("tr");
+  let nomor = 1 + (({{ page }} - 1) * {{ per_page }});
+
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    // hanya beri nomor pada baris data yang punya beberapa kolom (bukan placeholder)
+    if (cells.length > 1 && !cells[0].hasAttribute("colspan")) {
+      cells[0].textContent = nomor++;
+    }
+  });
+}
+
+
+  // 🔹 Ketika laporan baru diterima via socket
+  socket.on("new_report", (report) => {
+    notifCount++;
+    updateBadge();
+
+    const tr = document.createElement("tr");
+    tr.classList.add("table-warning");
+
+    // 💡 Kolom No dikosongkan dulu, nanti diisi otomatis oleh updateRowNumbers()
+    tr.innerHTML = `
+      <td></td>
+      <td>${report.created_at}</td>
+      <td>${report.title}</td>
+      <td>${report.unit}</td>
+      <td>${report.description || '-'}</td>
+      <td>${
+        report.image_path
+          ? `<a href="/static/${report.image_path}" target="_blank">
+              <img src="/static/${report.image_path}" class="img-thumbnail" style="max-height:80px;">
+            </a>`
+          : "-"
+      }</td>
+      <td>-</td>
+      <td><span class="badge bg-warning text-dark">Proses</span></td>
+      <td>
+        <form action="/admin/report/${report.id}/update" method="post" class="d-inline">
+          <select name="status" class="form-select form-select-sm d-inline w-auto">
+            <option value="Proses" selected>Proses</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+          <textarea name="comment" placeholder="Komentar" class="form-control form-control-sm d-inline komentar-field"></textarea>
+          <button type="submit" class="btn btn-sm btn-primary">Update</button>
+        </form>
+        <form action="/admin/report/${report.id}/delete" method="post" class="d-inline">
+          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus laporan ini?')">Hapus</button>
+        </form>
+      </td>
+    `;
+
+    tbody.prepend(tr); // tambahkan baris di atas
+    updateRowNumbers(); // 🔹 perbarui semua nomor
+    setTimeout(() => tr.classList.remove("table-warning"), 3000);
+  });
+
+  notifBtn.addEventListener("click", () => {
+    notifCount = 0;
+    updateBadge();
+  });
+
+  updateBadge();
+  updateRowNumbers(); // 🔹 pastikan nomor benar saat halaman pertama kali dimuat
+});
+</script>
+{% endblock %}
+
+
+
+
+

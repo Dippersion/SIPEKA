@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+<h2 class="mb-4">Inventaris Alat Kesehatan</h2>
+
+<!-- Form Tambah Inventaris -->
+<div class="card p-3 shadow-sm mb-4">
+  <h5 class="mb-3">Tambah Inventaris</h5>
+  <form method="post" action="{{ url_for('admin_inventory_add') }}" enctype="multipart/form-data" class="row g-3">
+
+    <div class="col-md-6">
+      <label>Nama Alat</label>
+      <input type="text" name="alat_nama" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label>Kode/SN Alat</label>
+      <input type="text" name="alat_sn" class="form-control">
+    </div>
+
+    <div class="col-md-6">
+      <label>Merk Alat</label>
+      <input type="text" name="alat_merk" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label>Type Alat</label>
+      <input type="text" name="alat_tipe" class="form-control">
+    </div>
+
+    <div class="col-md-6">
+      <label>Unit/Ruangan</label>
+      <input type="text" name="ruangan" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label>Tahun Perolehan</label>
+      <input type="number" name="tahun_perolehan" class="form-control" min="1900" max="2099" step="1" placeholder="2025">
+    </div>
+
+    <div class="col-md-6">
+      <label>Sumber Dana</label>
+      <input type="text" name="sumber_dana" class="form-control">
+    </div>
+
+    <div class="col-md-6">
+      <label>Tanggal Kalibrasi</label>
+      <input type="date" name="tgl_kalibrasi" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label>Tanggal Kalibrasi Ulang</label>
+      <input type="date" name="tgl_jatuh_tempo" class="form-control">
+    </div>
+
+    <div class="col-md-12">
+      <label>Upload Sertifikat Kalibrasi (PDF/PNG/JPG)</label>
+      <input type="file" name="sertifikat" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+    </div>
+
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-success">Tambah Inventaris</button>
+    </div>
+  </form>
+</div>
+</div>
+<!-- Daftar Inventaris -->
+<div class="card shadow-sm">
+  <div class="d-flex justify-content-between align-items-center mb-3 p-3">
+    <h5 class="mb-0">Daftar Inventaris</h5>
+    <div>
+      
+      <a href="{{ url_for('admin_inventory_export_xlsx') }}" class="btn btn-sm btn-outline-success">Unduh Excel</a>
+    </div>
+  </div>
+
+  <!-- FORM SEARCH & FILTER -->
+  <div class="p-3 border-bottom">
+    <form method="get" class="row g-2 align-items-stretch">
+
+      <div class="col-md-4 d-flex flex-column">
+        <label class="mb-1">Search</label>
+        <input type="text" name="q" class="form-control" placeholder="Cari nama, merk, tipe, SN..." value="{{ q }}">
+      </div>
+
+      <div class="col-md-3 d-flex flex-column">
+        <label class="mb-1">Filter Ruangan</label>
+        <input type="text" name="filter_ruangan" class="form-control" placeholder="Nama ruangan" value="{{ filter_ruangan }}">
+      </div>
+
+      <div class="col-md-3 d-flex flex-column">
+        <label class="mb-1">Filter Tahun Perolehan</label>
+        <input type="number" name="filter_tahun" class="form-control" placeholder="2025" value="{{ filter_tahun }}">
+      </div>
+
+      <div class="col-md-2 d-flex flex-column">
+        <button type="submit" class="btn btn-primary w-100 mt-auto">Terapkan</button>
+      </div>
+
+    </form>
+  </div>  
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <tr>
+		  <th>No</th>
+          <th>Nama Alat</th>
+          <th>Merk</th>
+          <th>Type</th>
+          <th>Kode/SN</th>
+          <th>Unit/Ruangan</th>
+          <th>Tahun Perolehan</th>
+          <th>Sumber Dana</th>
+          <th>Tanggal Kalibrasi</th>
+          <th>Tanggal Kalibrasi Ulang</th>
+          <th>Sertifikat</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in items %}
+        <tr>
+		  <td>{{ loop.index + ((page - 1) * 50) }}</td>  <!-- ✅ Kolom No otomatis -->
+          <td>{{ i['alat_nama'] }}</td>
+          <td>{{ i['alat_merk'] }}</td>
+          <td>{{ i['alat_tipe'] }}</td>
+          <td>{{ i['alat_sn'] }}</td>
+          <td>{{ i['ruangan'] }}</td>
+          <td>{{ i['tahun_perolehan'] }}</td>
+          <td>{{ i['sumber_dana'] }}</td>
+          <td>{{ i['tgl_kalibrasi'] }}</td>
+          <td>{{ i['tgl_jatuh_tempo'] }}</td>
+          <td>
+            {% if i['sertifikat_path'] %}
+              <a href="{{ url_for('static', filename=i['sertifikat_path']) }}" target="_blank" class="btn btn-sm btn-primary">Unduh</a>
+            {% else %}
+              <span class="text-muted">Belum ada</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="{{ url_for('admin_inventory_edit', iid=i['id']) }}" class="btn btn-warning btn-sm">
+                Edit
+              </a>
+              <form method="post" action="{{ url_for('admin_inventory_delete', iid=i['id']) }}" 
+                onsubmit="return confirm('Hapus data ini?');" class="d-inline">
+                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- PAGINATION -->
+<nav aria-label="Page navigation" class="p-3">
+  <ul class="pagination justify-content-center">
+    {% if page > 1 %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ q }}&filter_ruangan={{ filter_ruangan }}&filter_tahun={{ filter_tahun }}&page={{ page-1 }}">« Prev</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">« Prev</span></li>
+    {% endif %}
+
+    {% for p in range(1, total_pages+1) %}
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="?q={{ q }}&filter_ruangan={{ filter_ruangan }}&filter_tahun={{ filter_tahun }}&page={{ p }}">{{ p }}</a>
+      </li>
+    {% endfor %}
+
+    {% if page < total_pages %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ q }}&filter_ruangan={{ filter_ruangan }}&filter_tahun={{ filter_tahun }}&page={{ page+1 }}">Next »</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Next »</span></li>
+    {% endif %}
+  </ul>
+</nav>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const rows = document.querySelectorAll("tbody tr");
+  const today = new Date();
+  const warningDays = 90; // 3 bulan sebelum jatuh tempo
+
+  rows.forEach(row => {
+    const cellDue = row.querySelector("td:nth-child(10)"); // Tanggal Kalibrasi Ulang
+    if (!cellDue) return;
+
+    const dateText = cellDue.textContent.trim();
+    if (!dateText) return;
+
+    const dueDate = new Date(dateText); // parse YYYY-MM-DD
+    if (isNaN(dueDate)) return;
+
+    const diffDays = (dueDate - today) / (1000 * 60 * 60 * 24);
+
+    if (diffDays <= warningDays && diffDays > 0) {
+      cellDue.style.color = "red";
+      cellDue.style.fontWeight = "bold";
+    } else if (diffDays <= 0) {
+      cellDue.style.color = "darkred";
+      cellDue.style.fontWeight = "bold";
+    }
+  });
+});
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,247 @@
+:root {
+  --brand-primary: #2e7d32;    /* Hijau tua utama */
+  --brand-secondary: #4caf50;  /* Hijau muda */
+  --brand-dark: #0B5C49;
+}
+
+body {
+  background-color: #f6f9f8; /* hijau muda pucat */
+  font-family: Arial, sans-serif;
+}
+
+/* === Button Styling === */
+.btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.secondary {
+  background: #12B886;
+  color: white;
+}
+.btn.secondary:hover {
+  background: #0CA678;
+}
+.btn.danger {
+  background: #d64545;
+  color: white;
+}
+.btn.danger:hover {
+  background: #b02a37;
+}
+
+/* === Input Styling === */
+input[type=text],input[type=password],input[type=date],input[type=number],
+textarea,select,input[type=file] {
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #dbe6e1;
+  border-radius:10px;
+  margin-top:6px;
+  margin-bottom:12px;
+}
+
+/* === Table Styling === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table th {
+  background: #12B886; /* hijau logo */
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+table td {
+  background: white;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+tr:hover td {
+  background: #f0fdf4; /* hijau sangat muda saat hover */
+}
+tr td:first-child {
+  border-left:1px solid #e7eee9;
+  border-top-left-radius:10px;
+  border-bottom-left-radius:10px;
+}
+tr td:last-child {
+  border-right:1px solid #e7eee9;
+  border-top-right-radius:10px;
+  border-bottom-right-radius:10px;
+}
+
+/* === Status Badges === */
+.footer {text-align:center;color:#567;padding:20px;}
+.badge {
+  padding:6px 10px;
+  border-radius:999px;
+  background:#e8f7f1;
+  color:#096;
+  font-weight:600;
+}
+.status-selesai {
+  background: #34c759;
+  color: #fefefe;               /* teks lebih putih */
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(0,0,0,0.2); /* efek bayangan lembut agar lebih terbaca */
+}
+
+.status-proses {
+  background: #ffc107;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+/* === Card & Layout === */
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.contact-box {
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.contact {
+  background:white;
+  border:1px solid #e5efe9;
+  padding:12px 14px;
+  border-radius:12px;
+}
+.form-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+.form-grid-3 {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+@media(max-width:800px){
+  .form-grid,.form-grid-3{grid-template-columns:1fr;}
+}
+
+/* === Logo & Navbar Styling === */
+.brand-logo {
+  height: 48px;
+  max-height: 60px;
+  width: auto;
+}
+.brand-text {
+  color: #fff;
+  font-size: 16px;
+  font-weigh
+  
+  /* === Sticky Footer === */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* pastikan full tinggi layar */
+}
+
+main {
+  flex: 1; /* konten isi ruang kosong */
+}
+
+footer {
+  margin-top: auto; /* footer selalu nempel bawah */
+}
+
+/* === Komentar Auto-Resize === */
+.komentar-field {
+  display: inline-block;
+  vertical-align: middle;
+  width: 180px;       /* sesuaikan lebar kolom komentar */
+  min-height: 30px;
+  max-height: 150px;  /* batasi tinggi maksimal */
+  overflow: hidden;
+  resize: none;       /* nonaktifkan resize manual */
+  padding: 6px 8px;
+  font-size: 14px;
+  
+#chat-minimize {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: white;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#chat-minimize:hover {
+  color: #e0e0e0;
+}
+
+/* === Chat Box Styling === */
+#chat-box {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 320px;
+  max-height: 400px;       /* ✅ batas tinggi chat box */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;         /* ✅ agar isi tidak keluar dari kotak */
+  z-index: 1000;
+}
+
+#chat-messages {
+  flex: 1;
+  padding: 10px;
+  max-height: 250px;        /* ✅ batas tinggi area pesan */
+  overflow-y: auto;         /* ✅ aktifkan scroll vertikal */
+  scrollbar-width: thin;
+  scrollbar-color: #12B886 #f0f0f0;
+}
+
+/* ✅ Scrollbar cantik di browser berbasis Webkit */
+#chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background-color: #12B886;
+  border-radius: 10px;
+}
+
+/* Hanya untuk kolom Tanggal Kalibrasi Ulang */
+.tgl-jatuh-tempo-warning {
+  color: red !important;
+  font-weight: bold !important;
+}
+
+.tgl-jatuh-tempo-expired {
+  color: darkred !important;
+  font-weight: bold !important;
+}
+
+/* 🔔 Efek notifikasi tombol chat */
+#chat-btn.has-new {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(18, 184, 134, 0.6); }
+  70% { box-shadow: 0 0 0 15px rgba(18, 184, 134, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(18, 184, 134, 0); }
+}

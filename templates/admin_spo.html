@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Daftar SPO Alat Kesehatan</h2>
+
+<!-- Form Tambah SPO -->
+<div class="card p-3 shadow-sm mb-4">
+  <h5 class="mb-3">Tambah SPO</h5>
+  <form method="post" action="{{ url_for('admin_spo_add') }}" enctype="multipart/form-data" class="row g-3">
+    <div class="col-md-4">
+      <label>Nama Alat</label>
+      <input type="text" name="alat_nama" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+      <label>Merk Alat</label>
+      <input type="text" name="alat_merk" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label>Type Alat</label>
+      <input type="text" name="alat_tipe" class="form-control">
+    </div>
+    <div class="col-md-12">
+      <label>Upload SPO (PDF/Word/Image)</label>
+      <input type="file" name="spo_file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+    </div>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-success">Tambah SPO</button>
+    </div>
+  </form>
+</div>
+
+<!-- Tabel Daftar SPO -->
+<div class="card p-3 shadow-sm">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>No</th>
+        <th>Nama Alat</th>
+        <th>Merk</th>
+        <th>Type</th>
+        <th>Lihat/Unduh SPO</th>
+        <th>Aksi</th>   <!-- 🔹 Tambahan -->
+      </tr>
+    </thead>
+    <tbody>
+      {% for spo in spo_items %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ spo['alat_nama'] }}</td>
+        <td>{{ spo['alat_merk'] }}</td>
+        <td>{{ spo['alat_tipe'] }}</td>
+        <td>
+          {% if spo['file_path'] %}
+            <a href="{{ url_for('static', filename=spo['file_path']) }}" target="_blank" class="btn btn-sm btn-primary">Lihat / Unduh</a>
+          {% else %}
+            <span class="text-muted">Belum ada</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('admin_spo_edit', sid=spo['id']) }}" class="btn btn-sm btn-warning">Edit</a>
+          <form action="{{ url_for('admin_spo_delete', sid=spo['id']) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus data ini?')">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

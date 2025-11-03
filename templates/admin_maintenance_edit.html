@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Edit Pemeliharaan - SiPEKA RSUD Tigaraksa{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">✏️ Edit Data Pemeliharaan</h3>
+
+<div class="card p-3 mb-4 shadow-sm">
+  <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+    <h4 class="mb-3">🛠 Edit Data Pemeliharaan</h4>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label>Nama Alat</label>
+        <input type="text" name="nama_alat" value="{{ record.nama_alat }}" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label>Merk</label>
+        <input type="text" name="merk" value="{{ record.merk }}" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label>Tipe</label>
+        <input type="text" name="tipe" value="{{ record.tipe }}" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label>SN</label>
+        <input type="text" name="sn" value="{{ record.sn }}" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label>Ruangan</label>
+        <input type="text" name="ruangan" value="{{ record.ruangan }}" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label>Kondisi</label>
+        <select name="kondisi" class="form-select">
+          <option {{ 'selected' if record.kondisi == 'Baik' }}>Baik</option>
+          <option {{ 'selected' if record.kondisi == 'Perlu Perbaikan' }}>Perlu Perbaikan</option>
+          <option {{ 'selected' if record.kondisi == 'Rusak' }}>Rusak</option>
+        </select>
+      </div>
+    </div>
+
+<hr>
+<h5 class="fw-semibold text-primary mb-3">📅 Periode Pemeliharaan</h5>
+
+<div class="ps-2" style="max-width: 1000px;">  <!-- batas lebar form -->
+  {% for i in range(1,4) %}
+  <div class="row align-items-center mb-3">
+    <div class="col-md-4">
+      <label class="form-label mb-1 small">Tanggal Periode {{ i }}</label>
+      <input type="date" name="tgl_periode{{ i }}" 
+             value="{{ record['tgl_periode' ~ i] or '' }}" 
+             class="form-control form-control-sm">
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label mb-1 small">File Periode {{ i }}</label>
+      <input type="file" name="file_periode{{ i }}" 
+             class="form-control form-control-sm" 
+             accept=".pdf,.jpg,.png,.jpeg">
+
+      {% if record['file_periode' ~ i] %}
+        <div class="mt-1">
+          📂 <a href="{{ url_for('static', filename=record['file_periode' ~ i]) }}" 
+                target="_blank" 
+                class="small text-success text-decoration-none">
+            Lihat File Lama
+          </a>
+        </div>
+      {% else %}
+        <p class="small text-muted mb-0">Belum ada file.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Tombol simpan -->
+  <div class="mt-4">
+    <button type="submit" class="btn btn-primary">
+      💾 Simpan Perubahan
+    </button>
+  </div>
+</div>
+
+
+  </form>
+</div>
+{% endblock %}

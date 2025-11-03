@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SiPEKA RSUD Tigaraksa</title>
+
+  <!-- Bootstrap Offline -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+  <!-- Custom Style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+  <div class="container d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="card shadow p-4" style="max-width: 420px; width: 100%;">
+      <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" height="200" class="mb-2">
+        <h4 class="fw-bold">SiPEKA RSUD Tigaraksa</h4>
+        <p class="text-muted">RSUD Tigaraksa - Kab. Tangerang</p>
+      </div>
+
+      <!-- Form login -->
+      <form method="post" action="{{ url_for('login') }}">
+        {% if error %}
+          <div class="alert alert-danger py-2">{{ error }}</div>
+        {% endif %}
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn w-100" style="background-color:#12B886; color:white;">
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-3 mt-auto" style="background-color:#12B886; color:white;">
+    <div>
+      <small>SiPEKA RSUD Tigaraksa<br>Copyright © 2025 Elektromedis RSUD Tigaraksa</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Offline -->
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

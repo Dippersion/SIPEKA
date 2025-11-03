@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h3>Edit SPO</h3>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label>Nama Alat</label>
+            <input type="text" name="alat_nama" class="form-control" value="{{ spo_item['alat_nama'] }}" required>
+        </div>
+        <div class="mb-3">
+            <label>Merk Alat</label>
+            <input type="text" name="alat_merk" class="form-control" value="{{ spo_item['alat_merk'] }}">
+        </div>
+        <div class="mb-3">
+            <label>Type Alat</label>
+            <input type="text" name="alat_tipe" class="form-control" value="{{ spo_item['alat_tipe'] }}">
+        </div>
+        <div class="mb-3">
+            <label>File SPO (biarkan kosong jika tidak diganti)</label>
+            <input type="file" name="spo_file" class="form-control">
+            {% if spo_item['file_path'] %}
+                <p>File saat ini: <a href="{{ url_for('static', filename=spo_item['file_path']) }}" target="_blank">Lihat</a></p>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-success">Simpan</button>
+        <a href="{{ url_for('admin_spo') }}" class="btn btn-secondary">Batal</a>
+    </form>
+</div>
+{% endblock %}

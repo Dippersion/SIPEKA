@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm p-4">
+      <h3 class="mb-4 text-center">Buat Laporan Kerusakan Alat</h3>
+
+      <form method="post" enctype="multipart/form-data">
+        <!-- Judul -->
+        <div class="mb-3">
+          <label class="form-label">Judul Laporan</label>
+          <input type="text" name="title" class="form-control" placeholder="Contoh: Infus Pump Error kode E07" required>
+        </div>
+
+        <!-- Unit -->
+        <div class="mb-3">
+          <label class="form-label">Unit/Ruangan</label>
+          <input type="text" name="unit" class="form-control" placeholder="Contoh: ICU, IGD, OK, dsb" required>
+        </div>
+
+        <!-- Deskripsi -->
+        <div class="mb-3">
+          <label class="form-label">Deskripsi</label>
+          <textarea name="description" class="form-control" rows="4"
+            placeholder="Jelaskan gejala kerusakan, kondisi alat, dan waktu kejadian" required></textarea>
+        </div>
+
+        <!-- Foto -->
+        <div class="mb-3">
+          <label class="form-label">Foto (opsional)</label>
+          <input type="file" name="image" class="form-control" accept="image/*">
+          <div class="form-text">Boleh upload foto kerusakan (format JPG/PNG).</div>
+        </div>
+
+        <!-- Tombol -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success">Kirim Laporan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Stok Barang Tersedia</h3>
+
+<!-- 🔍 Search Bar -->
+<form method="get" action="{{ url_for('admin_stock_summary') }}" class="row gx-2 gy-2 align-items-center mb-3">
+  <div class="col-md-4 col-sm-6">
+    <input type="text" name="q" class="form-control" placeholder="Cari nama barang..." value="{{ q }}">
+  </div>
+  <div class="col-md-2 col-sm-3 d-grid">
+    <button type="submit" class="btn btn-primary w-100">Cari</button>
+  </div>
+  {% if q %}
+  <div class="col-md-2 col-sm-3 d-grid">
+    <a href="{{ url_for('admin_stock_summary') }}" class="btn btn-secondary w-100">Reset</a>
+  </div>
+  {% endif %}
+</form>
+
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('admin_stock_summary_export_xlsx', q=q) }}" class="btn btn-success">
+    📊 Unduh Excel
+  </a>
+</div>
+
+
+<!-- 📋 Tabel Stok -->
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-light text-center">
+    <tr>
+	  <th>No</th>
+      <th>Nama Barang</th>
+      <th>Qty Tersedia</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in items %}
+    <tr>
+	  <td class="text-center">{{ loop.index + ((page - 1) * per_page) }}</td>
+      <td>{{ i['nama_barang'] }}</td>
+      <td class="text-center">{{ i['qty_tersedia'] }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="2" class="text-center text-muted">Tidak ada data stok ditemukan.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<!-- Pagination -->
+<nav aria-label="Page navigation" class="mt-3">
+  <ul class="pagination justify-content-center">
+    {% if page > 1 %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page - 1 }}">« Prev</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">« Prev</span></li>
+    {% endif %}
+
+    {% for p in range(1, total_pages + 1) %}
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+      </li>
+    {% endfor %}
+
+    {% if page < total_pages %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page + 1 }}">Next »</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Next »</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+class Maintenance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama_alat = db.Column(db.String(100))
+    merk = db.Column(db.String(100))
+    type = db.Column(db.String(100))
+    sn = db.Column(db.String(100))
+    ruangan = db.Column(db.String(100))
+    tanggal_pemeliharaan = db.Column(db.Date)
+    kondisi = db.Column(db.String(50))
+    file_url = db.Column(db.String(200))

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mb-4">Edit Inventaris</h3>
+
+<form method="post" enctype="multipart/form-data" onsubmit="return confirm('Simpan perubahan inventaris ini?');">
+  <div class="mb-3">
+    <label>Nama Alat</label>
+    <input type="text" name="alat_nama" class="form-control" value="{{ item['alat_nama'] }}" required>
+  </div>
+
+  <div class="mb-3">
+    <label>Merk Alat</label>
+    <input type="text" name="alat_merk" class="form-control" value="{{ item['alat_merk'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Type Alat</label>
+    <input type="text" name="alat_tipe" class="form-control" value="{{ item['alat_tipe'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Kode/SN Alat</label>
+    <input type="text" name="alat_sn" class="form-control" value="{{ item['alat_sn'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Unit/Ruangan</label>
+    <input type="text" name="ruangan" class="form-control" value="{{ item['ruangan'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Tahun Perolehan</label>
+    <input type="number" name="tahun_perolehan" class="form-control" min="1900" max="2099" value="{{ item['tahun_perolehan'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Sumber Dana</label>
+    <input type="text" name="sumber_dana" class="form-control" value="{{ item['sumber_dana'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Tanggal Kalibrasi</label>
+    <input type="date" name="tgl_kalibrasi" class="form-control" value="{{ item['tgl_kalibrasi'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Tanggal Kalibrasi Ulang</label>
+    <input type="date" name="tgl_jatuh_tempo" class="form-control" value="{{ item['tgl_jatuh_tempo'] }}">
+  </div>
+
+  <div class="mb-3">
+    <label>Upload Sertifikat Kalibrasi (PDF/PNG/JPG)</label>
+    <input type="file" name="sertifikat" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+    
+    {% if sertifikat_url %}
+  <div class="mt-2">
+    <small>File sekarang: </small>
+    {% set ext = sertifikat_url.split('.')[-1].lower() %}
+    {% if ext in ['jpg','jpeg','png'] %}
+      <div>
+        <a href="{{ sertifikat_url }}" target="_blank">
+          <img src="{{ sertifikat_url }}" alt="Sertifikat" 
+               style="max-width:200px; max-height:150px; border:1px solid #ccc;">
+        </a>
+      </div>
+    {% elif ext == 'pdf' %}
+      <div>
+        <a href="{{ sertifikat_url }}" target="_blank" class="btn btn-sm btn-primary">Lihat PDF</a>
+      </div>
+    {% endif %}
+  </div>
+{% else %}
+  <small class="text-muted">Tidak ada sertifikat</small>
+{% endif %}
+
+  </div>
+
+  <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+  <a href="{{ url_for('admin_inventory') }}" class="btn btn-secondary">Batal</a>
+</form>
+{% endblock %}

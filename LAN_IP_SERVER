@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "name": "Testimoni SPO Digital RSUD Tigaraksa",
+  "aspect_ratio": "9:16",
+  "duration": 5,
+  "background": {
+    "type": "solid",
+    "color": "#e6f4ea"
+  },
+  "layers": [
+    {
+      "type": "text",
+      "content": "Testimoni",
+      "font": "Poppins-SemiBold",
+      "color": "#2e7d32",
+      "size": 72,
+      "align": "center",
+      "position": { "x": 0.5, "y": 0.4 },
+      "animation_in": {
+        "type": "typewriter",
+        "duration": 1.0
+      },
+      "animation_out": {
+        "type": "fade",
+        "duration": 0.3
+      },
+      "start_time": 0.0,
+      "end_time": 1.2
+    },
+    {
+      "type": "text",
+      "content": "SPO Digital Berbasis QR Code",
+      "font": "Poppins-SemiBold",
+      "color": "#4caf50",
+      "size": 60,
+      "align": "center",
+      "position": { "x": 0.5, "y": 0.55 },
+      "animation_in": {
+        "type": "slide_up_fast",
+        "duration": 0.8
+      },
+      "animation_out": {
+        "type": "fade",
+        "duration": 0.3
+      },
+      "start_time": 1.2,
+      "end_time": 3.2
+    },
+    {
+      "type": "text",
+      "content": "di RSUD Tigaraksa",
+      "font": "Poppins-SemiBoldItalic",
+      "color": "#0B5C49",
+      "size": 58,
+      "align": "center",
+      "position": { "x": 0.5, "y": 0.7 },
+      "animation_in": {
+        "type": "zoom_in_fast",
+        "duration": 0.8
+      },
+      "animation_out": {
+        "type": "fade",
+        "duration": 0.5
+      },
+      "start_time": 3.0,
+      "end_time": 5.0
+    }
+  ]
+}

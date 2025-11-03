@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SiPEKA RSUD Tigaraksa{% endblock %}</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+
+  .card {
+    border-radius: 12px;
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-right: 0;
+  }
+
+  .input-group .form-control {
+    border-left: 0;
+  }
+
+  .btn-sm, .form-select-sm {
+    font-size: 0.85rem;
+  }
+
+  /* 🔧 Responsive Fix untuk layar kecil */
+  @media (max-width: 992px) {
+    .d-flex.justify-content-between {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .ms-auto {
+      margin-left: 0 !important;
+    }
+    .d-flex.align-items-center.gap-2.ms-auto {
+      justify-content: flex-start !important;
+      width: 100%;
+    }
+  }
+
+
+
+    /* Layout dasar */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+
+    /* Chat bubble */
+    #chat-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #12B886;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    /* 🔹 Efek notifikasi chat baru */
+    #chat-btn.has-new {
+      background-color: #e63946 !important;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7);
+      }
+      70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(230, 57, 70, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+      }
+    }
+
+    /* Chat box */
+    #chat-box {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+    }
+    #chat-header {
+      background-color: #12B886;
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    #chat-messages {
+      flex: 1;
+      padding: 10px;
+      height: 250px;
+      max-height: 250px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .msg {
+      margin: 5px 0;
+      padding: 6px 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .msg.admin {
+      background-color: #12B886;
+      color: white;
+      align-self: flex-end;
+    }
+    .msg.user {
+      background-color: #f1f1f1;
+      align-self: flex-start;
+    }
+    #chat-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    #chat-input input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      outline: none;
+    }
+    #chat-input button {
+      background-color: #12B886;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#12B886;">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('admin_dashboard') }}">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="brand-logo me-2">
+      <span class="brand-text">ELEKTROMEDIS RSUD TIGARAKSA</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+      aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Dashboard</a></li>
+
+        {% if user and user.role == 'admin' %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_inventory') }}">Inventaris</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_maintenance') }}">Pemeliharaan</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_spo') }}">SPO</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_users') }}">Users</a></li>
+
+        <!-- Dropdown Stock -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="stockDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Stock</a>
+          <ul class="dropdown-menu" aria-labelledby="stockDropdown">
+            <li><a class="dropdown-item" href="{{ url_for('admin_stock_in') }}">Barang Masuk</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('admin_stock_out') }}">Barang Keluar</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('admin_stock_summary') }}">Stok Barang</a></li>
+          </ul>
+        </li>
+        {% endif %}
+
+        {% if user and user.role == 'user' %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('user_spo') }}">SPO</a></li>
+        {% endif %}
+
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="container-fluid my-4 px-4">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="text-center py-3" style="background-color:#12B886;color:white;">
+  <p class="mb-1">Kontak Teknisi Elektromedis:</p>
+  <p class="mb-0">
+    <a href="https://wa.me/6285781440112" target="_blank" class="text-white text-decoration-none">Ivakov</a> |
+    <a href="https://wa.me/6281293845396" target="_blank" class="text-white text-decoration-none">Fuad</a> |
+    <a href="https://wa.me/6282310758955" target="_blank" class="text-white text-decoration-none">Yuga</a>
+  </p>
+  <div class="text-center p-2" style="background-color:#12B886;color:white">
+    <small>SiPEKA RSUD Tigaraksa — © 2025 Elektromedis RSUD Tigaraksa</small>
+  </div>
+</footer>
+
+<!-- 🔹 CHAT BUTTON -->
+<button id="chat-btn">💬</button>
+
+<!-- 🔹 CHAT BOX -->
+<div id="chat-box" class="d-flex flex-column d-none">
+  <div id="chat-header" class="d-flex justify-content-between align-items-center">
+    <span>Chat Elektromedis</span>
+    <button id="chat-minimize" class="btn btn-sm btn-light px-2 py-0">—</button>
+  </div>
+  <div id="chat-messages" class="d-flex flex-column flex-grow-1"></div>
+  <div id="chat-input">
+    <input type="text" id="msg" placeholder="Ketik pesan..." />
+    <button id="sendBtn" type="button">Kirim</button>
+  </div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+  const socket = io();
+  const username = "{{ user.username }}";
+  const room = "{{ user.ruangan or 'umum' }}";
+
+  const chatBtn = document.getElementById('chat-btn');
+  const chatBox = document.getElementById('chat-box');
+  const chatMessages = document.getElementById('chat-messages');
+  const sendBtn = document.getElementById('sendBtn');
+  const msgInput = document.getElementById('msg');
+  const chatMinimize = document.getElementById('chat-minimize');
+
+  let chatOpen = false;
+
+  // === OPEN/CLOSE CHAT ===
+  chatBtn.addEventListener('click', () => {
+    chatBox.classList.remove('d-none');
+    chatBtn.classList.remove('has-new');
+    chatBtn.innerText = '💬';
+    chatBtn.style.display = 'none';
+    chatOpen = true;
+  });
+
+  chatMinimize.addEventListener('click', () => {
+    chatBox.classList.add('d-none');
+    chatBtn.style.display = 'block';
+    chatOpen = false;
+  });
+
+  // === JOIN ROOM ===
+  socket.emit('join', { username, room });
+
+  // === SEND MESSAGE ===
+  sendBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const msg = msgInput.value.trim();
+    if (msg !== '') {
+      socket.emit('send_message', { username, room, msg });
+      msgInput.value = '';
+    }
+  });
+
+  msgInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendBtn.click();
+  });
+
+  // === RECEIVE MESSAGE ===
+  socket.on('message', data => {
+    const div = document.createElement('div');
+    div.classList.add('msg');
+    div.classList.add(data.user === username ? 'admin' : 'user');
+    div.textContent = `${data.user}: ${data.msg}`;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // 🔹 Jika chat tertutup dan bukan pesan sendiri, tampilkan notifikasi
+    if (!chatOpen && data.user !== username) {
+      chatBtn.classList.add('has-new');
+      chatBtn.innerText = '💬🟢';
+    }
+  });
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Daftar SPO Alat Elektromedik</h2>
+
+<div class="card p-3 shadow-sm">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>No</th>
+        <th>Nama Alat</th>
+        <th>Merk</th>
+        <th>Tipe</th>
+        <th>Lihat/Unduh SPO</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for spo in spo_items %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ spo['alat_nama'] }}</td>
+        <td>{{ spo['alat_merk'] }}</td>
+        <td>{{ spo['alat_tipe'] }}</td>
+        <td>
+          {% if spo['file_path'] %}
+            <a href="{{ url_for('static', filename=spo['file_path']) }}" target="_blank" class="btn btn-sm btn-primary">
+              Lihat / Unduh
+            </a>
+          {% else %}
+            <span class="text-muted">Belum ada</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
